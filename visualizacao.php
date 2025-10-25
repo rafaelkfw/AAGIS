@@ -35,10 +35,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save']) && isset($_POS
 <html lang="pt-br">
 <head>
      <meta charset="UTF-8">
-     <title>Visualizar / Editar Estágio</title>
+     <title>Visualizar Estágio</title>
 </head>
 <body>
-     <h1>Visualizar / Editar Estágio</h1>
+     <h1>Visualizar e Editar Estágio</h1>
 
      <?php if(!$estagio): ?>
           <p>Nenhum estágio selecionado. <a href="listagem.php">Voltar à lista</a></p>
@@ -64,7 +64,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save']) && isset($_POS
                <label>Supervisor: <input type="text" name="nomeSupervisor" value="<?= htmlspecialchars($estagio->getNameSupervisor()) ?>"></label><br>
                <label>E-mail Supervisor: <input type="email" name="emailSupervisor" value="<?= htmlspecialchars($estagio->getEmailSupervisor()) ?>"></label><br>
 
-               <button type="submit" name="save">Salvar alterações</button>
+               <button type="submit" name="save">Salvar</button>
                <a href="listagem.php">Voltar</a>
           </form>
      <?php endif; ?>

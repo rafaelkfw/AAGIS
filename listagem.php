@@ -44,7 +44,7 @@ $estagios = Estagio::findall();
                 <td><?= htmlspecialchars($estagio->getDataInicio()) ?> - <?= htmlspecialchars($estagio->getDataFim()) ?></td>
                 <td><?= $estagio->getStatus() == 1 ? 'Aberto' : 'Fechado' ?></td>
                 <td>
-                    <a href="visualizacao.php?idEstagio=<?= $estagio->getIdEstagio() ?>">Ver / Editar</a>
+                    <a href="visualizacao.php?idEstagio=<?= $estagio->getIdEstagio() ?>">Visualizar Estágio</a>
                     |
                     <a href="listagem.php?idEstagio=<?= $estagio->getIdEstagio() ?>">Alternar Status</a>
                 </td>
