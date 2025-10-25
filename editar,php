@@ -1,0 +1,61 @@
+<?php
+session_start();
+if(!isset($_SESSION['idUsuario'])){
+    header("location: cadastro.php");
+}
+require_once __DIR__.'/classes/estagio.php';
+$estagios = Estagio::findall();
+
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+if ($id <= 0) {
+    echo "<p>ID de estágio inválido.</p>";
+    echo "<a href='listagem.php'>Voltar</a>";
+    exit;
+}
+
+        $sql = "UPDATE estagios SET empresa = '$empresa',setor = '$setor',tipo = '$tipo',data_inicio = '$data_inicio',data_fim = '$data_fim',supervisor = '$supervisor',orientador = '$orientador',email_orientador = '$email_orientador'
+        WHERE id = $id";
+?>
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Estágio</title>
+</head>
+<body>
+    <h2>Atualizar / Editar Estágio</h2>
+
+    <form method="POST">
+        <p><strong>Nome do Aluno:</strong> <?= $estagio["aluno"] ?></p>
+
+        <label>Data de Início:</label><br>
+        <input type="date" name="data_inicio" value="<?= $estagio['data_inicio'] ?>"><br><br>
+
+        <label>Data de Término:</label><br>
+        <input type="date" name="data_fim" value="<?= $estagio['data_fim'] ?>"><br><br>
+
+        <label>Nome da Empresa:</label><br>
+        <input type="text" name="empresa" value="<?= $estagio['empresa'] ?>"><br><br>
+
+        <label>Setor da Empresa:</label><br>
+        <input type="text" name="setor" value="<?= $estagio['setor'] ?>"><br><br>
+
+        <label>Tipo de Estágio:</label><br>
+        <input type="text" name="tipo" value="<?= $estagio['tipo'] ?>"><br><br>
+
+        <label>Nome do Supervisor:</label><br>
+        <input type="text" name="supervisor" value="<?= $estagio['supervisor'] ?>"><br><br>
+
+        <label>Nome do Orientador:</label><br>
+        <input type="text" name="orientador" value="<?= $estagio['orientador'] ?>"><br><br>
+
+        <label>Email do Orientador:</label><br>
+        <input type="email" name="email_orientador" value="<?= $estagio['email_orientador'] ?>"><br><br>
+
+        <button type="submit">Salvar</button>
+        <a href="listagem.php">Cancelar</a>
+    </form>
+</body>
+</html>
