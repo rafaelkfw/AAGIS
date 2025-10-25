@@ -30,7 +30,8 @@ if(isset($_POST['botao'])){
         <input type='date' name='dataDeFim' id='dataDeFim' required>
 
         <label for='tipoDeEstagio'>Tipo de Estágio: </label>
-        <input type='radio' name='tipoEstagio' id='estagioTipo' required>
+        <input type='radio' name='tipoEstagio' id='obrigatorio' required>
+        <input type='radio' name='tipoEstagio' id='naoObrigatorio' required>
 
         <label for='vinculo'>Vínculo Trabalhista: </label>
         <input type='radio' name='vinculo' id='vinculo' required>
