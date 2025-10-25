@@ -31,8 +31,7 @@ $estagios = estagio::findall();
         }
      } 
      ?>
-<a href="sair.php">Sair</a>
-
+    <a href="listagem.php">Voltar para listagem</a>
 
 </body>
 </html>
