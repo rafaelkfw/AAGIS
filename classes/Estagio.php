@@ -3,12 +3,40 @@ require_once __DIR__."/../bd/MySQL.php";
 
 class Estagio{
 
-    private int $idEstagio;
-    
-    public function __construct(private string $name, private date $dataInicio, private date $dataFim,
-    private string $empresa, private string $setorEmpresa, private bool $vinculoTrabalhista, 
-    private bool $obrigatorio, private string $nameSupervisor, private string $emailSupervisor, 
-    private string $Professor, private int $idAluno, private int $idProfessor){
+    // propriedades públicas/privadas sem tipagem estrita para compatibilidade
+    private $idEstagio;
+    private $name;
+    private $dataInicio;
+    private $dataFim;
+    private $empresa;
+    private $setorEmpresa;
+    private $vinculoTrabalhista;
+    private $obrigatorio;
+    private $nameSupervisor;
+    private $emailSupervisor;
+    private $professor;
+    private $idAluno;
+    private $idProfessor;
+    private $status;
+
+    public function __construct($name = '', $dataInicio = null, $dataFim = null,
+        $empresa = '', $setorEmpresa = '', $vinculoTrabalhista = 0,
+        $obrigatorio = 0, $nameSupervisor = '', $emailSupervisor = '',
+        $professor = '', $idAluno = null, $idProfessor = null, $status = 1){
+
+        $this->name = $name;
+        $this->dataInicio = $dataInicio;
+        $this->dataFim = $dataFim;
+        $this->empresa = $empresa;
+        $this->setorEmpresa = $setorEmpresa;
+        $this->vinculoTrabalhista = $vinculoTrabalhista;
+        $this->obrigatorio = $obrigatorio;
+        $this->nameSupervisor = $nameSupervisor;
+        $this->emailSupervisor = $emailSupervisor;
+        $this->professor = $professor;
+        $this->idAluno = $idAluno;
+        $this->idProfessor = $idProfessor;
+        $this->status = $status;
     }
 
     public function getIdEstagio(){
@@ -119,10 +147,10 @@ class Estagio{
     public function save():bool{
         $conexao = new MySQL();
         $sql = "INSERT INTO estagio (name, dataInicio, dataFim, empresa, setorEmpresa, vinculoTrabalhista, 
-        obrigatorio, nameSupervisor, emailSupervisor, professor, idAluno, idProfessor)
+        obrigatorio, nameSupervisor, emailSupervisor, professor, idAluno, idProfessor, status)
         VALUES ('{$this->name}', '{$this->dataInicio}', '{$this->dataFim}', '{$this->empresa}',
         '{$this->setorEmpresa}', '{$this->vinculoTrabalhista}', '{$this->obrigatorio}', '{$this->nameSupervisor}',
-        '{$this->emailSupervisor}', '{$this->Professor}', '{$this->idAluno}', '{$this->idProfessor}')";
+        '{$this->emailSupervisor}', '{$this->professor}', '{$this->idAluno}', '{$this->idProfessor}', '{$this->status}')";
         return $conexao->executa($sql);
     }
 
@@ -134,18 +162,22 @@ class Estagio{
         $estagios = array();
         foreach($resultados as $resultado){
             $e = new Estagio(
-                $resultado['name'],
-                $resultado['dataInicio'],
-                $resultado['dataFim'],
-                $resultado['empresa'],
-                $resultado['setorEmpresa'],
-                $resultado['vinculoTrabalhista'],
-                $resultado['obrigatorio'],
-                $resultado['nameSupervisor'],
-                $resultado['emailSupervisor'],
-                $resultado['Professor']
+                $resultado['name'] ?? '',
+                $resultado['dataInicio'] ?? null,
+                $resultado['dataFim'] ?? null,
+                $resultado['empresa'] ?? '',
+                $resultado['setorEmpresa'] ?? '',
+                $resultado['vinculoTrabalhista'] ?? 0,
+                $resultado['obrigatorio'] ?? 0,
+                $resultado['nameSupervisor'] ?? '',
+                $resultado['emailSupervisor'] ?? '',
+                $resultado['professor'] ?? '',
+                $resultado['idAluno'] ?? null,
+                $resultado['idProfessor'] ?? null,
+                $resultado['status'] ?? 1
             );
-            $e->idEstagio = $resultado['idEstagio'];
+            $e->idEstagio = $resultado['idEstagio'] ?? null;
+            $e->setStatus($resultado['status'] ?? 1);
             $estagios[] = $e;
         }
         return $estagios;
@@ -155,20 +187,62 @@ class Estagio{
         $conexao = new MySQL();
         $sql = "SELECT * FROM estagio WHERE idEstagio = {$idEstagio}";
         $resultado = $conexao->consulta($sql);
+        $row = $resultado[0];
         $e = new Estagio(
-            $resultado[0]['name'],
-            $resultado[0]['dataInicio'],
-            $resultado[0]['dataFim'],
-            $resultado[0]['empresa'],
-            $resultado[0]['setorEmpresa'],
-            $resultado[0]['vinculoTrabalhista'],
-            $resultado[0]['obrigatorio'],
-            $resultado[0]['nameSupervisor'],
-            $resultado[0]['emailSupervisor'],
-            $resultado[0]['Professor']
+            $row['name'] ?? '',
+            $row['dataInicio'] ?? null,
+            $row['dataFim'] ?? null,
+            $row['empresa'] ?? '',
+            $row['setorEmpresa'] ?? '',
+            $row['vinculoTrabalhista'] ?? 0,
+            $row['obrigatorio'] ?? 0,
+            $row['nameSupervisor'] ?? '',
+            $row['emailSupervisor'] ?? '',
+            $row['professor'] ?? '',
+            $row['idAluno'] ?? null,
+            $row['idProfessor'] ?? null,
+            $row['status'] ?? 1
         );
-        $e->setIdEstagio($resultado[0]['idEstagio']);
+        $e->setIdEstagio($row['idEstagio'] ?? null);
+        $e->setStatus($row['status'] ?? 1);
         return $e;
+    }
+
+    // atualiza um estagio existente
+    public function update(): bool{
+        if(!$this->idEstagio){
+            return false;
+        }
+        $conexao = new MySQL();
+        $sql = "UPDATE estagio SET 
+            name = '{$this->name}',
+            dataInicio = '{$this->dataInicio}',
+            dataFim = '{$this->dataFim}',
+            empresa = '{$this->empresa}',
+            setorEmpresa = '{$this->setorEmpresa}',
+            vinculoTrabalhista = '{$this->vinculoTrabalhista}',
+            obrigatorio = '{$this->obrigatorio}',
+            nameSupervisor = '{$this->nameSupervisor}',
+            emailSupervisor = '{$this->emailSupervisor}',
+            professor = '{$this->professor}',
+            idAluno = '{$this->idAluno}',
+            idProfessor = '{$this->idProfessor}',
+            status = '{$this->status}'
+            WHERE idEstagio = {$this->idEstagio}"
+        ;
+        return $conexao->executa($sql);
+    }
+
+    // alterna status (por exemplo abrir/fechar estágio)
+    public static function mudarStatus($idEstagio): bool{
+        $conexao = new MySQL();
+        // pega status atual
+        $sql = "SELECT status FROM estagio WHERE idEstagio = {$idEstagio}";
+        $res = $conexao->consulta($sql);
+        if(!isset($res[0])) return false;
+        $novo = $res[0]['status'] == 1 ? 0 : 1;
+        $sql2 = "UPDATE estagio SET status = {$novo} WHERE idEstagio = {$idEstagio}";
+        return $conexao->executa($sql2);
     }
 
     //STATIC = NAO PRECISA CRIAR OBJETO PRA USAR O MÉTODO
