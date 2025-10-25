@@ -19,6 +19,11 @@ class Estagio{
     private $idProfessor;
     private $status;
 
+    // status constants
+    const STATUS_FINALIZADO = 0;
+    const STATUS_ATIVO = 1;
+    const STATUS_EM_ANDAMENTO = 2;
+
     public function __construct($name = '', $dataInicio = null, $dataFim = null,
         $empresa = '', $setorEmpresa = '', $vinculoTrabalhista = 0,
         $obrigatorio = 0, $nameSupervisor = '', $emailSupervisor = '',
@@ -230,6 +235,29 @@ class Estagio{
             status = '{$this->status}'
             WHERE idEstagio = {$this->idEstagio}"
         ;
+        return $conexao->executa($sql);
+    }
+
+    public function getStatus(){
+        return $this->status;
+    }
+
+    public function setStatus($status): void{
+        $this->status = $status;
+    }
+
+    public function isFinalizado(): bool{
+        return intval($this->status) === self::STATUS_FINALIZADO;
+    }
+
+    public function isAtivo(): bool{
+        return intval($this->status) === self::STATUS_ATIVO || intval($this->status) === self::STATUS_EM_ANDAMENTO;
+    }
+
+    // marca um estágio como finalizado (soft-delete)
+    public static function finalizar($idEstagio): bool{
+        $conexao = new MySQL();
+        $sql = "UPDATE estagio SET status = " . self::STATUS_FINALIZADO . " WHERE idEstagio = {$idEstagio}";
         return $conexao->executa($sql);
     }
 

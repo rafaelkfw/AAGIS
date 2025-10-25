@@ -42,11 +42,28 @@ $estagios = Estagio::findall();
                 <td><?= htmlspecialchars($estagio->getName()) ?></td>
                 <td><?= htmlspecialchars($estagio->getEmpresa()) ?></td>
                 <td><?= htmlspecialchars($estagio->getDataInicio()) ?> - <?= htmlspecialchars($estagio->getDataFim()) ?></td>
-                <td><?= $estagio->getStatus() == 1 ? 'Aberto' : 'Fechado' ?></td>
                 <td>
-                    <a href="visualizacao.php?idEstagio=<?= $estagio->getIdEstagio() ?>">Visualizar Estágio</a>
-                    |
-                    <a href="listagem.php?idEstagio=<?= $estagio->getIdEstagio() ?>">Alternar Status</a>
+                    <?php
+                        $s = $estagio->getStatus();
+                        if($s == \Estagio::STATUS_FINALIZADO){
+                            echo 'Finalizado';
+                        } elseif($s == \Estagio::STATUS_ATIVO){
+                            echo 'Ativo';
+                        } else {
+                            echo 'Em andamento';
+                        }
+                    ?>
+                </td>
+                <td>
+                    <?php if($estagio->isFinalizado()): ?>
+                        <span style="color:gray">Inacessível (finalizado)</span>
+                    <?php else: ?>
+                        <a href="visualizacao.php?idEstagio=<?= $estagio->getIdEstagio() ?>">Visualizar / Editar</a>
+                        |
+                        <a href="listagem.php?idEstagio=<?= $estagio->getIdEstagio() ?>">Alternar Status</a>
+                        |
+                        <a href="deletar.php?idEstagio=<?= $estagio->getIdEstagio() ?>" onclick="return confirm('Finalizar este estágio?')">Finalizar</a>
+                    <?php endif; ?>
                 </td>
             </tr>
         <?php endforeach; ?>

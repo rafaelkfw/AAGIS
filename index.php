@@ -5,12 +5,12 @@ if(!isset($_SESSION['idUsuario'])){
 }
 
 if(isset($_GET['idEstagio'])){
-     require_once __DIR__.'/classes/estagio.php';
-     estagio::mudarStatus($_GET['idEstagio']);
+    require_once __DIR__.'/classes/Estagio.php';
+    Estagio::mudarStatus($_GET['idEstagio']);
  }
 
-require_once __DIR__.'/classes/estagio.php';
-$estagios = estagio::findall();
+require_once __DIR__.'/classes/Estagio.php';
+$estagios = Estagio::findall();
 
 ?>
 <!DOCTYPE html>
@@ -22,16 +22,14 @@ $estagios = estagio::findall();
 </head>
 <body>
 <h1>estagios cadastrados</h1>
-     <?php 
-     foreach($estagios as $estagio){
-        if($estagio->getstatus() == 1 ){
-             echo "{$estagio->getdescricao()} - {$estagio->getempresa()} - <a href='cadastro.php?idEstagio={$estagio->getidEstagio()}'>Fechar estagio</a>";
-             echo "<br>";
+    <?php
+    foreach($estagios as $estagio){
+        if($estagio->isAtivo()){
+            echo htmlspecialchars($estagio->getName()) . ' - ' . htmlspecialchars($estagio->getEmpresa()) . ' - <a href="visualizacao.php?idEstagio=' . $estagio->getIdEstagio() . '">Ver / Editar</a>';
+            echo "<br>";
         }
-    
-
-     } 
-     ?>
+    }
+    ?>
 <a href="sair.php">Sair</a> 
 
 
